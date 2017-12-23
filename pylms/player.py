@@ -19,6 +19,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
+import datetime
+
 
 class Player(object):
     """
@@ -401,7 +403,7 @@ class Player(object):
         if repeat != None:
             command += " repeat:" + ('1' if enabled else '0')
         if time != None:
-            command += " time:" + str(time)
+            command += " time:" + str(time.hour*3600 + time.minute*60 + time.second)
         if volume != None:
             command += " volume:" + str(volume)
         if url != None:
@@ -437,7 +439,8 @@ class Player(object):
             item['dow'] = [int(x) for x in item['dow'].split(',')]
             item['enabled'] = item['enabled'] != 0
             item['repeat'] = item['repeat'] != 0
-            item['time'] = int(item['time'])
+            alarmtime = int(item['time'])
+            item['time'] = datetime.time(hour=int(alarmtime/3600), minute=int((alarmtime/60)%60), second=int(alarmtime%60))
             item['volume'] = int(item['volume'])
             alarmlist.append(item)
         return alarmlist
