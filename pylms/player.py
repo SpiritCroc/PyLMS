@@ -383,6 +383,65 @@ class Player(object):
             playlist.append(item)
         return playlist
 
+    # alarms
+
+    def __alarm_change(self, command, alarm_id, dow, enabled, repeat, time, volume, url):
+        """Change an alarm with one of the add|update|delete commands"""
+        command = "alarm " + command
+        if alarm_id != None:
+            command += " id:" + alarm_id
+        if dow != None:
+            command += " dow:"
+            for d in dow:
+                command += str(d) + ','
+            if command.endswith(','):
+                command = command[:-1]
+        if enabled != None:
+            command += " enabled:" + ('1' if enabled else '0')
+        if repeat != None:
+            command += " repeat:" + ('1' if enabled else '0')
+        if time != None:
+            command += " time:" + str(time)
+        if volume != None:
+            command += " volume:" + str(volume)
+        if url != None:
+            command += " url:" + url
+        response = self.request(command)
+        return response.split('id:')[1].split(' ')[0]
+
+    def alarm_update(self, alarm_id, dow=None, enabled=None, repeat=None, time=None, volume=None, url=None):
+        """Update an existing alarm"""
+        return self.__alarm_change("update", alarm_id, dow, enabled, repeat, time, volume, url)
+
+    def alarm_add(self, time, alarm_id=None, dow=None, enabled=None, repeat=None, volume=None, url=None):
+        """Add a new alarm (and return its id)"""
+        return self.__alarm_change("add", alarm_id, dow, enabled, repeat, time, volume, url)
+
+    def alarm_delete(self, alarm_id):
+        """Delete an alarm"""
+        return self.__alarm_change("delete", alarm_id, None, None, None, None, None, None)
+
+    def alarm_list(self):
+        """Get info about available alarms"""
+        response = self.request("alarms 0 999 filter:all")
+        encoded_list = response.split('id:')[1:]
+        alarmlist = []
+        for encoded in encoded_list:
+            data = [self.__unquote(x) for x in ('id:' + encoded).split(' ')]
+            item = {}
+            for info in data:
+                info = info.split(':')
+                key = info.pop(0)
+                if key:
+                    item[key] = ':'.join(info)
+            item['dow'] = [int(x) for x in item['dow'].split(',')]
+            item['enabled'] = item['enabled'] != 0
+            item['repeat'] = item['repeat'] != 0
+            item['time'] = int(item['time'])
+            item['volume'] = int(item['volume'])
+            alarmlist.append(item)
+        return alarmlist
+
     # actions
 
     def show(
