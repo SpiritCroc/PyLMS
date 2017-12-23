@@ -86,7 +86,7 @@ class Server(object):
         self.telnet.write(self.__encode(command_string + "\n"))
         response = self.telnet.read_until(self.__encode("\n"))[:-1]
         if not preserve_encoding:
-            response = self.__decode(self.__unquote(response))
+            response = self.__unquote(self.__decode(response))
         else:
             command_string_quoted = \
                 command_string[0:command_string.find(':')] + \
@@ -169,7 +169,7 @@ class Server(object):
         """
         Get Player
         """
-        if isinstance(ref, str):
+        if isinstance(ref, bytes):
             ref = self.__decode(ref)
         ref = ref.lower()
         if ref:
