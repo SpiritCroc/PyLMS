@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
 import telnetlib
+import traceback
 import urllib
 from pylms.player import Player
 
@@ -98,12 +99,12 @@ class Server(object):
             if not preserve_encoding:
                 result = response[len(command_string)+1:]
             else:
-                result = response[len(command_string_quoted)+1:]
+                result = self.__decode(response[len(command_string_quoted)+1:])
         else:
             if not preserve_encoding:
                 result = response[len(command_string)-1:]
             else:
-                result = response[len(command_string_quoted)-1:]
+                result = self.__decode(response[len(command_string_quoted)-1:])
         return result
 
     def request_with_results(self, command_string, preserve_encoding=False):
@@ -113,8 +114,6 @@ class Server(object):
         """
         quotedColon = self.__quote(':')
         try:
-            #init
-            quotedColon = urllib.quote(':')
             #request command string
             resultStr = ' '+self.request(command_string, True)
             #get number of results
@@ -145,12 +144,13 @@ class Server(object):
                         #save item
                         key, value = subResult.split(quotedColon, 1)
                         if not preserve_encoding:
-                            item[urllib.unquote(key)] = self.__unquote(value)
+                            item[self.__unquote(key)] = self.__unquote(value)
                         else:
                             item[key] = value
                     output.append(item)
             return count, output, False
-        except Exception as e:
+        except Exception:
+            traceback.print_exc()
             #error parsing results (not correct?)
             return 0, [], True
 
