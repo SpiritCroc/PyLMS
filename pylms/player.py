@@ -437,8 +437,8 @@ class Player(object):
                 if key:
                     item[key] = ':'.join(info)
             item['dow'] = [int(x) for x in item['dow'].split(',')]
-            item['enabled'] = item['enabled'] != 0
-            item['repeat'] = item['repeat'] != 0
+            item['enabled'] = item['enabled'] != '0'
+            item['repeat'] = item['repeat'] != '0'
             alarmtime = int(item['time'])
             item['time'] = datetime.time(hour=int(alarmtime/3600), minute=int((alarmtime/60)%60), second=int(alarmtime%60))
             item['volume'] = int(item['volume'])
