@@ -37,7 +37,8 @@ class Server(object):
             port=9090,
             username="",
             password="",
-            charset="utf8"):
+            charset="utf8",
+            timeout=None):
 
         """
         Constructor
@@ -54,6 +55,7 @@ class Server(object):
         self.player_count = 0
         self.players = []
         self.charset = charset
+        self.timeout = timeout
 
     def connect(self, update=True):
         """
@@ -70,7 +72,7 @@ class Server(object):
         """
         Telnet Connect
         """
-        self.telnet = telnetlib.Telnet(self.hostname, self.port)
+        self.telnet = telnetlib.Telnet(self.hostname, self.port, self.timeout)
 
     def login(self):
         """
@@ -85,7 +87,7 @@ class Server(object):
         """
         # self.logger.debug("Telnet: %s" % (command_string))
         self.telnet.write(self.__encode(command_string + "\n"))
-        response = self.telnet.read_until(self.__encode("\n"))[:-1]
+        response = self.telnet.read_until(self.__encode("\n"), self.timeout)[:-1]
         if not preserve_encoding:
             response = self.__unquote(self.__decode(response))
         else:
