@@ -436,7 +436,10 @@ class Player(object):
                 key = info.pop(0)
                 if key:
                     item[key] = ':'.join(info)
-            item['dow'] = [int(x) for x in item['dow'].split(',')]
+            try:
+                item['dow'] = [int(x) for x in item['dow'].split(',')]
+            except:
+                item['dow'] = []
             item['enabled'] = item['enabled'] != '0'
             item['repeat'] = item['repeat'] != '0'
             alarmtime = int(item['time'])
