@@ -385,6 +385,11 @@ class Player(object):
             playlist.append(item)
         return playlist
 
+    def playlist_save(self, name):
+        """Save current playlist with name"""
+        item = self.__quote(name)
+        self.request("playlist save %s" % (name))
+
     # alarms
 
     def __alarm_change(self, command, alarm_id, dow, enabled, repeat, time, volume, url):
