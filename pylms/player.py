@@ -185,11 +185,8 @@ class Player(object):
 
     def get_time_remaining(self):
         """Get Player Time Remaining"""
-        if self.get_mode() == "play":
-            remaining = self.get_track_duration() - self.get_time_elapsed()
-            return remaining
-        else:
-            return 0
+        remaining = self.get_track_duration() - self.get_time_elapsed()
+        return remaining
 
     def get_power_state(self):
         """Get Player Power State"""
