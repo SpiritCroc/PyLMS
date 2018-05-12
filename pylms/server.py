@@ -193,7 +193,10 @@ class Server(object):
         Get Number Of Players
         """
         self.player_count = self.request("player count ?")
-        return int(self.player_count)
+        try:
+            return int(self.player_count)
+        except:
+            return 0
 
     def search(self, term, mode='albums'):
         """
