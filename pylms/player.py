@@ -361,6 +361,10 @@ class Player(object):
         (index is zero-based)"""
         return self.request('playlist index %i' % index)
 
+    def playlist_get_index(self):
+        """Get the current playlist index"""
+        return int(self.request('playlist index ?'))
+
     def playlist_get_info(self):
         """Get info about the tracks in the current playlist"""
         amount = self.playlist_track_count()
@@ -378,7 +382,10 @@ class Player(object):
                     item[key] = ':'.join(info)
             item['position'] = int(item['position'])
             item['id'] = int(item['id'])
-            item['duration'] = float(item['duration'])
+            try:
+                item['duration'] = float(item['duration'])
+            except:
+                pass
             playlist.append(item)
         return playlist
 
